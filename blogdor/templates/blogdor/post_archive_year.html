@@ -1,0 +1,13 @@
+<h1>{{ year }}</h1>
+
+{% if date_list %}
+	<ol>
+		{% for date in date_list %}
+			<li><a href="{% url blogdor_archive_month year date|date:"m" %}">{{ date|date:"F" }}</a></li>
+		{% endfor %}
+	</ol>
+{% endif %}
+
+{% if post_list %}
+	{% include "blogdor/post_list.html" %}
+{% endif %}

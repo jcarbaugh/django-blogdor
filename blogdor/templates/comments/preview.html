@@ -1,0 +1,36 @@
+{% extends "base_blog.html" %}
+{% load comments %}
+{% load i18n %}
+{% load markup %}
+
+{% block blog_content %}
+    <form action="{% comment_form_target %}" method="post">
+        {% if form.errors %}
+            <div class="errors">
+				{% blocktrans count form.errors|length as counter %}
+					Please correct the error below
+				{% plural %}
+					Please correct the errors below
+				{% endblocktrans %}
+			</div>
+        {% else %}
+            <p>{% trans "Preview your comment" %}</p>
+            <blockquote>{{ comment|markdown }}</blockquote>
+            <p>
+                {% trans "and" %} <input type="submit" name="submit" class="submit-post" value="{% trans "Post your comment" %}" id="submit" /> {% trans "or make changes" %}:
+            </p>
+        {% endif %}
+        {% for field in form %}
+            {% if field.is_hidden %}
+                {{ field }}
+            {% else %}
+                  {% if field.errors %}<p class="error">{{ field.errors }}</p>{% endif %}
+                  <p{% ifequal field.name "honeypot" %} style="display:none;"{% endifequal %}>{{ field.label_tag }} {{ field }}</p>
+            {% endif %}
+        {% endfor %}
+        <p class="submit">
+			<button name="post" type="submit"><span>Post</span></button>
+			<button name="preview" type="submit"><span>Preview</span></button>
+        </p>
+    </form>
+{% endblock %}

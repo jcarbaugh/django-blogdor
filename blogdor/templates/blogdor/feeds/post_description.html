@@ -1,0 +1,15 @@
+{% load markup %}
+
+{% ifequal obj.markup 'markdown' %}
+    {{ obj.content|markdown|safe }}
+{% else %}
+    {% ifequal obj.markup 'textile' %}
+        {{ obj.content|textile|safe }}
+    {% else %}                
+        {% ifequal obj.markup 'restructuredtext' %}
+            {{ obj.content|restructuredtext|safe }}
+        {% else %}
+            {{ obj.content|safe }}
+        {% endifequal %}
+    {% endifequal %}
+{% endifequal %}
