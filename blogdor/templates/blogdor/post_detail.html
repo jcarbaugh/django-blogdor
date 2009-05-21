@@ -1,2 +1,46 @@
+{% load comments %}
+{% load markup %}
+{% load tagging_tags %}
 
-{{ post }}
+<div>
+	{{ post }}
+</div>
+
+{% tags_for_object post as tags %}
+
+{% if tags %}
+    <div>
+        <span>Tags:</span>
+        <ul>
+            {% for tag in tags %}
+            	<li><a href="{% url blogdor_tag tag %}">{{ tag }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>  
+{% endif %}
+
+{% if post.is_published %}
+    {% get_comment_list for post as comment_list %}
+    <div>
+        <h3>Comments</h3>
+		<p class="tip"><a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> is supported in comments.</p>
+        {% if comment_list %}
+            <ol id="comments">
+                {% for comment in comment_list %}
+                    <li id="c{{ comment.pk }}">
+                        <div>
+                        	{% if comment.user_url %}
+                                <p><a href="{{ comment.user_url }}">{{ comment.user_name }}</a></p>
+                            {% else %}
+                                <p>{{ comment.user_name }}</p>
+                            {% endif %}
+						</div>
+                        <div class="entry-content"><p>{{ comment.comment|markdown }}</p></div>
+						<div class="clear"></div>
+                    </li>
+                {% endfor %}
+            </ol>
+        {% endif %}
+        {% render_comment_form for post %}
+    </div>    
+{% endif %}

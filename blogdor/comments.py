@@ -6,7 +6,7 @@ AKISMET_KEY = getattr(settings, "AKISMET_KEY", None)
 
 class AkismetModerator(CommentModerator):
     
-    def moderate(comment, content_object, request):
+    def moderate(moderator, comment, request):
         
         from akismet import Akismet
         
@@ -29,7 +29,7 @@ class BlogdorModerator(CommentModerator):
     
     enable_field = 'comments_enabled'
     
-    def email(comment, content_object, request):
+    def email(moderator, comment, request):
         
         from django.core.mail import send_mail
         
@@ -37,8 +37,10 @@ class BlogdorModerator(CommentModerator):
         if not from_email:
             from_email = "bounce@%s" % Site.objects.get_current().domain
         
-        subject = "New comment on %s" % content_object.title
+        print dir(comment)
+        
+        subject = "New comment on %s" % comment.content_object.title
         message = comment.get_as_text()
-        recipient_email = content_object.author.email
+        recipient_email = comment.content_object.author.email
         
         send_mail(subject, message, from_email, (recipient_email,), fail_silently=True)
