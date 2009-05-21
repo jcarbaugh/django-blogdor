@@ -63,7 +63,7 @@ The default year archive page will display a list of months in the year and link
 
 Use the boring old default feeds if set to _True_. If _False_, you will have to specify the feed URLs yourself, though you may use or extend the Feed classes provided by blogdor (blogdor.feeds.LatestPosts, blogdor.feeds.LatestComments, blogdor.feeds.LatestForTag).
 
-	BLOGDOR_DEFAULT_FEEDS = True
+	BLOGDOR_ENABLE_FEEDS = True
 
 Time-to-live for the feeds. Valid only if _BLOGDOR\_DEFAULT\_FEEDS_ is set to _True_.
 
