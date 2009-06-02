@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.http import HttpResponsePermanentRedirect
@@ -97,4 +98,19 @@ def tag_list(request):
                     template_name='blogdor/tag_list.html',
                     template_object_name='tag',
                     allow_empty=True)
-    
+
+#
+# Author views
+#
+
+def author(request, username):
+    try:
+        author = User.objects.get(username=username)
+        return list_detail.object_list(
+                    request,
+                    queryset=Post.objects.published().filter(author=author),
+                    paginate_by=POSTS_PER_PAGE,
+                    template_object_name='post',
+                    allow_empty=True)
+    except User.DoesNotExist:
+        return HttpResponseRedirect(reverse('blogdor_archive'))
