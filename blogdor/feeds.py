@@ -59,6 +59,28 @@ class LatestComments(BlogdorFeed):
     def item_pubdate(self, comment):
         return comment.submit_date
 
+class LatestForAuthor(BlogdorFeed):
+
+    feed_title = u"Recent blog posts authored by '%s'"
+    feed_description = feed_title
+
+    def title(self, author):
+        if hasattr(author, 'get_full_name'):
+            return self.feed_title % author.get_full_name()
+        return self.feed_title % author
+
+    def description(self, author):
+        return self.feed_description % (author.get_full_name() if hasattr(author, 'get_full_name') else author)
+
+    def get_object(self, bits):
+        try:
+            return User.objects.get(username=bits[-1])
+        except User.DoesNotExist:
+            return bits[-1]
+
+    def items(self, author):
+        return Post.objects.published().filter(author=author)[:ITEMS_PER_FEED]
+
 class LatestForTag(BlogdorFeed):
     
     feed_title = u"Recent blog posts tagged with '%s'"

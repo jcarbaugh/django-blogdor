@@ -19,6 +19,9 @@ urlpatterns = patterns('blogdor.views',
     url(r'^(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/(?P<slug>[\w-]+)/$', 'post_wpcompat', name='blogdor_post_wpcompat'),  
     url(r'^(?P<year>\d{4})/(?P<slug>[\w-]+)/$', 'post', name='blogdor_post'),
     
+    # author
+    url(r'^author/(?P<username>[\w]+)/$', 'author', name='blogdor_author'),
+    
 )
 
 if getattr(settings, 'BLOGDOR_ENABLE_FEEDS', True):
@@ -29,6 +32,7 @@ if getattr(settings, 'BLOGDOR_ENABLE_FEEDS', True):
         'latest': LatestPosts,
         'comments': LatestComments,
         'tag': LatestForTag,
+        'author': LatestForAuthor,
     }
     
     params = {'feed_dict': default_feeds}
