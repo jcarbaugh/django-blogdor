@@ -26,7 +26,8 @@ urlpatterns = patterns('blogdor.views',
 
 if getattr(settings, 'BLOGDOR_ENABLE_FEEDS', True):
     
-    from blogdor.feeds import LatestPosts, LatestComments, LatestForTag
+    from blogdor.feeds import (LatestPosts, LatestComments,
+        LatestForAuthor, LatestForTag)
     
     default_feeds = {
         'latest': LatestPosts,

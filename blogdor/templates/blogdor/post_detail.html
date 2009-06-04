@@ -1,3 +1,4 @@
+{% load buttons %}
 {% load comments %}
 {% load markup %}
 {% load tagging_tags %}
@@ -5,6 +6,8 @@
 <div>
 	{{ post }}
 </div>
+
+{% mixx %}{% digg %}{% reddit "programming" %}
 
 {% tags_for_object post as tags %}
 

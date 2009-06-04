@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.contrib.comments.models import Comment
 from django.contrib.syndication.feeds import Feed
 from django.core.urlresolvers import reverse
@@ -61,16 +62,22 @@ class LatestComments(BlogdorFeed):
 
 class LatestForAuthor(BlogdorFeed):
 
-    feed_title = u"Recent blog posts authored by '%s'"
+    feed_title = u"Recent blog posts authored by %s"
     feed_description = feed_title
+    
+    def _display_name(self, user):
+        if hasattr(user, 'get_full_name'):
+            display_name = user.get_full_name()
+            if not display_name:
+                display_name = user.username
+            return display_name
+        return user
 
     def title(self, author):
-        if hasattr(author, 'get_full_name'):
-            return self.feed_title % author.get_full_name()
-        return self.feed_title % author
+        return self.feed_title % self._display_name(author)
 
     def description(self, author):
-        return self.feed_description % (author.get_full_name() if hasattr(author, 'get_full_name') else author)
+        return self.feed_description % self._display_name(author)
 
     def get_object(self, bits):
         try:
