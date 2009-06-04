@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.conf.urls.defaults import *
+from django.core.urlresolvers import reverse
 
 urlpatterns = patterns('blogdor.views',
 
@@ -22,6 +23,10 @@ urlpatterns = patterns('blogdor.views',
     # author
     url(r'^author/(?P<username>[\w]+)/$', 'author', name='blogdor_author'),
     
+)
+
+urlpatterns += patterns('django.views.generic.simple',
+    url(r'^author/$', 'redirect_to', {'url': reverse('blogdor_archive')}),
 )
 
 if getattr(settings, 'BLOGDOR_ENABLE_FEEDS', True):
