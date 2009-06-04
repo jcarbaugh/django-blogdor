@@ -17,12 +17,7 @@ class PostAdmin(admin.ModelAdmin):
         Mark select posts as published and set date_published if it does not exist.
         """
         now = datetime.datetime.now()
-        published_count = queryset.count()
-        for post in queryset:
-            post.is_published = True
-            if not post.date_published:
-                post.date_published = now
-            post.save()
+        published_count = queryset.publish()
         s = published_count == 1 and 'posts' or 'post'
         self.message_user(request, "%i %s published" % (published_count, s))
     publish_posts.short_description = "Publish posts"
@@ -31,7 +26,7 @@ class PostAdmin(admin.ModelAdmin):
         """
         Recall published posts, but leave date_published as is.
         """
-        recalled_count = queryset.update(is_published=False)
+        recalled_count = queryset.recall()
         s = recalled_count == 1 and 'posts' or 'post'
         self.message_user(request, "%i %s recalled" % (recalled_count, s))
     recall_posts.short_description = "Recall published posts"
