@@ -8,6 +8,7 @@ import datetime
 
 COMMENT_FILTERS = getattr(settings, "BLOGDOR_COMMENT_FILTERS", [])
 WP_PERMALINKS = getattr(settings, "BLOGDOR_WP_PERMALINKS", False)
+DEFAULT_MARKUP = getattr(settings, "BLOGDOR_DEFAULT_MARKUP", "markdown")
 
 class PostQuerySet(models.query.QuerySet):
     
@@ -38,8 +39,8 @@ class Post(models.Model):
     slug = models.SlugField(max_length=64, db_index=True)
     author = models.ForeignKey(User, related_name='posts')
     
-    content = MarkupField()
-    excerpt = MarkupField(blank=True, null=True)
+    content = MarkupField(default_markup_type=DEFAULT_MARKUP)
+    excerpt = MarkupField(markup_type='plain', blank=True, null=True)
     
     timestamp = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True, auto_now_add=True)
@@ -60,6 +61,7 @@ class Post(models.Model):
         return self.title
     
     def save(self):
+        self.excerpt.markup_type = self.content.markup_type
         if self.is_published and not self.date_published:
             self.date_published = datetime.datetime.now()
         super(Post, self).save()

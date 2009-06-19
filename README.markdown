@@ -77,6 +77,15 @@ Blogdor will sometimes send emails to Post authors. If not specified in settings
 	BLOGDOR_FROM_EMAIL = 'bounce@%s'
 
 
+#### Markup Settings
+
+Blogdor uses James Turk's [django-markupfield](http://github.com/jamesturk/django-markupfield/) to allow users to select different forms of markup with which their posts are to be rendered. The type of markup can be selected on a per-post basis, but the default is Markdown. To override the default, set _BLOGDOR\_DEFAULT\_MARKUP_.
+
+	BLOGDOR_DEFAULT_MARKUP = 'markdown'
+
+Refer to MarkupField documentation for the available markup types.
+
+
 #### Other Settings
 
 Set to your Akismet key if you would like to use Akismet filtering on comments.
