@@ -14,8 +14,8 @@ class PostQuerySet(models.query.QuerySet):
     
     def publish(self):
         now = datetime.datetime.now()
-        count = self.filter(date_published__isnull=True).update(is_published=True, date_published=now)
-        count += self.filter(date_published__isnull=False).update(is_published=True)
+        count = self.filter(date_published__isnull=False).update(is_published=True)
+        count += self.filter(date_published__isnull=True).update(is_published=True, date_published=now)
         return count
         
     def recall(self):
