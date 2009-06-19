@@ -14,10 +14,6 @@ python >= 2.5
 
 django >= r10650
 
-django.contrib.comments
-
-django.contrib.markup
-
 tagging >= r155
 
 
