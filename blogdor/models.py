@@ -2,18 +2,12 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.comments.moderation import moderator
 from django.db import models
+from markupfield.fields import MarkupField
 from tagging.fields import TagField
 import datetime
 
 COMMENT_FILTERS = getattr(settings, "BLOGDOR_COMMENT_FILTERS", [])
 WP_PERMALINKS = getattr(settings, "BLOGDOR_WP_PERMALINKS", False)
-
-MARKUP_CHOICES = (
-    ('none', 'plain text or HTML'),
-    ('textile', 'Textile'),
-    ('markdown', 'Markdown'),
-    ('restructuredtext', 'ReST'),
-)
 
 class PostQuerySet(models.query.QuerySet):
     
@@ -35,8 +29,7 @@ class PostManager(models.Manager):
         
     def get_query_set(self):
         return PostQuerySet(self.model)
-    
-        
+
 class Post(models.Model):
     
     objects = PostManager()
@@ -45,15 +38,16 @@ class Post(models.Model):
     slug = models.SlugField(max_length=64, db_index=True)
     author = models.ForeignKey(User, related_name='posts')
     
-    content = models.TextField()
-    excerpt = models.TextField(blank=True, null=True)
-    markup = models.CharField(max_length=32, choices=MARKUP_CHOICES, default='none')
+    content = MarkupField()
+    excerpt = MarkupField(blank=True, null=True)
     
     timestamp = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True, auto_now_add=True)
     
     date_published = models.DateTimeField(blank=True, null=True)
     is_published = models.BooleanField(default=False)
+    
+    is_favorite = models.BooleanField(default=False)
     
     comments_enabled = models.BooleanField(default=True)
     
