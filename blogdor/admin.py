@@ -4,9 +4,9 @@ import datetime
 
 class PostAdmin(admin.ModelAdmin):
     
-    list_display = ('title','author','date_published','is_published','comments_enabled')
+    list_display = ('title','is_published','date_published','author','is_favorite','comments_enabled')
     list_display_links = ('title',)
-    list_filter = ('author','is_published','comments_enabled')
+    list_filter = ('author','is_published','comments_enabled','is_favorite')
     prepopulated_fields = {'slug': ('title',)}
     exclude = ('date_published','is_published',)
     search_fields = ('title','content')
