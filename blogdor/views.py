@@ -21,9 +21,7 @@ def post(request, year, slug):
     if WP_PERMALINKS:
         try:
             post = Post.objects.get(date_published__year=year, slug=slug)
-            month = "%02d" % post.date_published.month
-            day = "%02d" % post.date_published.day
-            return HttpResponsePermanentRedirect(reverse('blogdor_post_wpcompat', args=(year, month, day, slug)))
+            return HttpResponsePermanentRedirect(post.get_absolute_url())
         except Post.DoesNotExist:
             return HttpResponseRedirect(reverse('blogdor_archive'))
     else:
@@ -33,7 +31,7 @@ def post_wpcompat(request, year, month, day, slug):
     if WP_PERMALINKS:
         return _post(request, year, slug)
     else:
-        return HttpResponsePermanentRedirect(reverse('blogdor_post', args=(year, slug)))
+        return HttpResponsePermanentRedirect(post.get_absolute_url())
 
 def _post(request, year, slug):
     return list_detail.object_detail(
@@ -113,4 +111,22 @@ def author(request, username):
                     template_object_name='post',
                     allow_empty=True)
     except User.DoesNotExist:
+        return HttpResponseRedirect(reverse('blogdor_archive'))
+
+#
+# Preview view
+#
+
+def preview(request, post_id, slug):
+    try:
+        post = Post.objects.get(pk=post_id)
+        if post.is_published:
+            return HttpResponsePermanentRedirect(post.get_absolute_url())
+        else:
+            return list_detail.object_detail(
+                    request,
+                    queryset=Post.objects.all(),
+                    object_id=post_id,
+                    template_object_name='post')
+    except Post.DoesNotExist:
         return HttpResponseRedirect(reverse('blogdor_archive'))
