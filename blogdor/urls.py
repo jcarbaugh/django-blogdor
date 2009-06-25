@@ -23,6 +23,9 @@ urlpatterns = patterns('blogdor.views',
     # author
     url(r'^author/(?P<username>[\w]+)/$', 'author', name='blogdor_author'),
     
+    # preview
+    url(r'^preview/(?P<post_id>\d+)/(?P<slug>[\w-]+)/$', 'preview', name='blogdor_preview'),
+    
 )
 
 urlpatterns += patterns('django.views.generic.simple',

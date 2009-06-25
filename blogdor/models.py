@@ -78,7 +78,7 @@ class Post(models.Model):
             params['month'] = "%02d" % self.date_published.month,
             params['day'] = "%02d" % self.date_published.day
         return (urlname, (), params)
-    
+        
     def publish(self):
         self.is_published = True
         self.save()
