@@ -16,8 +16,9 @@ FEED_TTL = getattr(settings, 'BLOGDOR_FEED_TTL', 120)
 class BlogdorFeed(Feed):
 
     description_template = 'blogdor/feeds/post_description.html'
-    
-    link = reverse('blogdor_archive')
+   
+    def link(self):
+        return reverse('blogdor_archive')
 
     def ttl(self):
         return str(FEED_TTL)
