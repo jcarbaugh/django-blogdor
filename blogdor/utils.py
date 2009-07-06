@@ -1,3 +1,5 @@
+from django.conf import settings
+
 GRAVATAR_DEFAULT = getattr(settings, "GRAVATAR_DEFAULT", None)
 GRAVATAR_SIZE = getattr(settings, "GRAVATAR_SIZE", 0)
 GRAVATAR_URL = "http://www.gravatar.com/avatar.php"
