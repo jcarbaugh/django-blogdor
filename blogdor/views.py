@@ -119,7 +119,7 @@ def author(request, username):
 
 def preview(request, post_id, slug):
     try:
-        post = Post.objects.get(pk=post_id)
+        post = Post.objects.get(pk=post_id, slug=slug)
         if post.is_published:
             return HttpResponsePermanentRedirect(post.get_absolute_url())
         else:
