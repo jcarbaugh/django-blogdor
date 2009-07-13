@@ -20,7 +20,7 @@ WP_PERMALINKS = getattr(settings, "BLOGDOR_WP_PERMALINKS", False)
 def post(request, year, slug):
     if WP_PERMALINKS:
         try:
-            post = Post.objects.get(date_published__year=year, slug=slug)
+            post = Post.objects.select_related().get(date_published__year=year, slug=slug)
             return HttpResponsePermanentRedirect(post.get_absolute_url())
         except Post.DoesNotExist:
             return HttpResponseRedirect(reverse('blogdor_archive'))
@@ -36,7 +36,7 @@ def post_wpcompat(request, year, month, day, slug):
 def _post(request, year, slug):
     return list_detail.object_detail(
                     request,
-                    queryset=Post.objects.published().filter(date_published__year=year),
+                    queryset=Post.objects.published().select_related().filter(date_published__year=year),
                     slug=slug,
                     template_object_name='post')
 
@@ -47,7 +47,7 @@ def _post(request, year, slug):
 def archive(request):
     return list_detail.object_list(
                     request,
-                    queryset=Post.objects.published(),
+                    queryset=Post.objects.published().select_related(),
                     paginate_by=POSTS_PER_PAGE,
                     template_object_name='post',
                     allow_empty=True)
@@ -55,7 +55,7 @@ def archive(request):
 def archive_month(request, year, month):
     return date_based.archive_month(
                     request,
-                    queryset=Post.objects.published(),
+                    queryset=Post.objects.published().select_related(),
                     date_field='date_published',
                     year=year,
                     month=month,
@@ -66,7 +66,7 @@ def archive_month(request, year, month):
 def archive_year(request, year):
     return date_based.archive_year(
                     request,
-                    queryset=Post.objects.published(),
+                    queryset=Post.objects.published().select_related(),
                     date_field='date_published',
                     year=year,
                     template_object_name='post',
@@ -80,7 +80,7 @@ def archive_year(request, year):
 def tag(request, tag):
     return tagged_object_list(
                     request,
-                    Post.objects.published(),
+                    Post.objects.published().select_related(),
                     tag,
                     paginate_by=POSTS_PER_PAGE,
                     template_object_name='post',
@@ -106,7 +106,7 @@ def author(request, username):
         author = User.objects.get(username=username)
         return list_detail.object_list(
                     request,
-                    queryset=Post.objects.published().filter(author=author),
+                    queryset=Post.objects.published().select_related().filter(author=author),
                     paginate_by=POSTS_PER_PAGE,
                     template_object_name='post',
                     extra_context={'author':author},
@@ -120,13 +120,13 @@ def author(request, username):
 
 def preview(request, post_id, slug):
     try:
-        post = Post.objects.get(pk=post_id, slug=slug)
+        post = Post.objects.select_related().get(pk=post_id, slug=slug)
         if post.is_published:
             return HttpResponsePermanentRedirect(post.get_absolute_url())
         else:
             return list_detail.object_detail(
                     request,
-                    queryset=Post.objects.all(),
+                    queryset=Post.objects.select_related().all(),
                     object_id=post_id,
                     template_object_name='post')
     except Post.DoesNotExist:
