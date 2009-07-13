@@ -12,7 +12,16 @@ register = template.Library()
 def recent_posts(count=5, offset=0):
     try:
         index = count + offset
-        posts = Post.objects.public()[offset:index]
+        posts = Post.objects.published()[offset:index]
+        return render_to_string("blogdor/post_summary.html", {"posts": posts})
+    except IndexError:
+        pass
+
+@register.simple_tag
+def user_posts(user, count=5, offset=0):
+    try:
+        index = count + offset
+        posts = Post.objects.published().filter(author=user)[offset:index]
         return render_to_string("blogdor/post_summary.html", {"posts": posts})
     except IndexError:
         pass
