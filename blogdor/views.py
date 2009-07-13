@@ -109,6 +109,7 @@ def author(request, username):
                     queryset=Post.objects.published().filter(author=author),
                     paginate_by=POSTS_PER_PAGE,
                     template_object_name='post',
+                    extra_context={'author':author},
                     allow_empty=True)
     except User.DoesNotExist:
         return HttpResponseRedirect(reverse('blogdor_archive'))
