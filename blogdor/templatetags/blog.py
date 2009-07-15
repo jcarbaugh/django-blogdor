@@ -2,7 +2,10 @@ from blogdor import utils
 from blogdor.models import Post
 from django import template
 from django.conf import settings
+from django.db.models import Count
 from django.template.loader import render_to_string
+from django.contrib.contenttypes.models import ContentType
+from tagging.models import Tag
 import md5
 import urllib
 
@@ -30,6 +33,14 @@ class UserPostsNode(template.Node):
         context[self.varname] = posts[self.offset:self.count+self.offset]
         return ''
 
+class TagListNode(template.Node):
+    def __init__(self, tags, varname):
+        self.tags = tags
+        self.varname = varname
+
+    def render(self, context):
+        context[self.varname] = self.tags
+        return ''
 
 def _simple_get_posts(token, queryset):
     pieces = token.contents.split()
@@ -78,6 +89,19 @@ def get_user_posts(parser, token):
     varname = pieces[as_index+1]
 
     return UserPostsNode(user, count, offset, varname)
+
+@register.tag
+def get_tag_counts(parser, token):
+    pieces = token.contents.split()
+    if len(pieces) != 4:
+        raise template.TemplateSyntaxError('%r tag must be in format {%% %r comma,separated,tags as varname %%}' % pieces[0])
+
+    tags = pieces[1].split(',')
+    post_ct = ContentType.objects.get_for_model(Post).id
+    tags = Tag.objects.filter(items__content_type=post_ct, name__in=tags).annotate(count=Count('id'))
+    varname = pieces[-1]
+
+    return TagListNode(tags, varname)
 
 @register.simple_tag
 def gravatar(email):
