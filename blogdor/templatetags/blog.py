@@ -29,7 +29,7 @@ class UserPostsNode(template.Node):
 
     def render(self, context):
         user = self.user.resolve(context)
-        posts = Post.objects.published().filter(author=user)
+        posts = Post.objects.published().filter(author=user).select_related()
         context[self.varname] = posts[self.offset:self.count+self.offset]
         return ''
 
@@ -63,11 +63,11 @@ def _simple_get_posts(token, queryset):
 
 @register.tag
 def get_recent_posts(parser, token):
-    return _simple_get_posts(token, Post.objects.published())
+    return _simple_get_posts(token, Post.objects.published().select_related())
 
 @register.tag
 def get_favorite_posts(parser, token):
-   return _simple_get_posts(token, Post.objects.published().filter(is_favorite=True))
+   return _simple_get_posts(token, Post.objects.published().filter(is_favorite=True).select_related())
 
 @register.tag
 def get_user_posts(parser, token):
