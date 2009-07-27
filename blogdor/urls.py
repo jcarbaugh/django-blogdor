@@ -8,7 +8,7 @@ urlpatterns = patterns('blogdor.views',
     url(r'^comment/', include('django.contrib.comments.urls')),
     
     # tags
-    url(r'^tag/(?P<tag>[\w-]+)/$', 'tag', name='blogdor_tag'),
+    url(r'^tag/(?P<tag>[^/]+)/$', 'tag', name='blogdor_tag'),
     url(r'^tag/$', 'tag_list', name='blogdor_tag_list'),
     
     # archives
