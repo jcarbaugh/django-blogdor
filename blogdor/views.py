@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.views.generic import date_based, list_detail
 from blogdor.models import Post
 from tagging.models import Tag
@@ -31,6 +31,7 @@ def post_wpcompat(request, year, month, day, slug):
     if WP_PERMALINKS:
         return _post(request, year, slug)
     else:
+        post = get_object_or_404(Post, date_published__year=year, slug=slug)
         return HttpResponsePermanentRedirect(post.get_absolute_url())
 
 def _post(request, year, slug):
