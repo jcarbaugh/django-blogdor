@@ -1,7 +1,9 @@
 from django.conf import settings
+import urllib
+import md5
 
 GRAVATAR_DEFAULT = getattr(settings, "GRAVATAR_DEFAULT", None)
-GRAVATAR_SIZE = getattr(settings, "GRAVATAR_SIZE", 0)
+GRAVATAR_SIZE = getattr(settings, "GRAVATAR_SIZE", 50)
 GRAVATAR_URL = "http://www.gravatar.com/avatar.php"
 
 def gravatar(email):

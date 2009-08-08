@@ -6,8 +6,6 @@ from django.db.models import Count
 from django.template.loader import render_to_string
 from django.contrib.contenttypes.models import ContentType
 from tagging.models import Tag
-import md5
-import urllib
 
 register = template.Library()
 
