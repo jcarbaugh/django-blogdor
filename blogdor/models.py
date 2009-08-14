@@ -5,10 +5,12 @@ from django.db import models
 from markupfield.fields import MarkupField
 from tagging.fields import TagField
 import datetime
+from blogdor.comments import BlogdorModerator
 
 COMMENT_FILTERS = getattr(settings, "BLOGDOR_COMMENT_FILTERS", [])
 WP_PERMALINKS = getattr(settings, "BLOGDOR_WP_PERMALINKS", False)
 DEFAULT_MARKUP = getattr(settings, "BLOGDOR_DEFAULT_MARKUP", "markdown")
+BLOGDOR_MODERATOR = getattr(settings, 'BLOGDOR_MODERATOR', BlogdorModerator)
 
 class PostQuerySet(models.query.QuerySet):
     
@@ -87,12 +89,4 @@ class Post(models.Model):
         self.is_published = False
         self.save()
 
-#
-# setup comment moderation for Post
-#
-
-from blogdor.comments import AkismetModerator, BlogdorModerator
-
-if getattr(settings, "AKISMET_KEY", None):
-    moderator.register(Post, AkismetModerator)
-moderator.register(Post, BlogdorModerator)
+moderator.register(Post, BLOGDOR_MODERATOR)
