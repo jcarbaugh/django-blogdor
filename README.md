@@ -54,6 +54,9 @@ The default year archive page will display a list of months in the year and link
 
 	BLOGDOR_YEAR_POST_LIST = False
 
+Some sites have many users, most of whom are not allowed to post on the blog. 
+
+    BLOGDOR_AUTHOR_GROUP = None
 
 #### Feed Settings
 
