@@ -1,6 +1,6 @@
 from distutils.core import setup
 
-long_description = open('README.markdown').read()
+long_description = open('README.md').read()
  
 setup(
     name='django-blogdor',
