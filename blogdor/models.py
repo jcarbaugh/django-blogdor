@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.comments.moderation import moderator
+from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from markupfield.fields import MarkupField
 from tagging.fields import TagField
@@ -10,7 +11,7 @@ from blogdor.comments import BlogdorModerator
 COMMENT_FILTERS = getattr(settings, "BLOGDOR_COMMENT_FILTERS", [])
 WP_PERMALINKS = getattr(settings, "BLOGDOR_WP_PERMALINKS", False)
 DEFAULT_MARKUP = getattr(settings, "BLOGDOR_DEFAULT_MARKUP", "markdown")
-BLOGDOR_MODERATOR = getattr(settings, 'BLOGDOR_MODERATOR', BlogdorModerator)
+BLOGDOR_MODERATOR = getattr(settings, 'BLOGDOR_MODERATOR', 'blogdor.comments.BlogdorModerator')
 
 class PostQuerySet(models.query.QuerySet):
     
@@ -89,4 +90,16 @@ class Post(models.Model):
         self.is_published = False
         self.save()
 
-moderator.register(Post, BLOGDOR_MODERATOR)
+
+def _load_moderator(path):
+    i = path.rfind('.')
+    module, attr = path[:i], path[i+1:]
+    try:
+        mod = __import__(module, {}, {}, [attr])
+    except ImportError, e:
+        raise ImproperlyConfigured('Error importing module %s: "%s"' % (module, e))
+    try:
+        return getattr(mod, attr)
+    except AttributeError:
+        raise ImproperlyConfigured('Module "%s" does not define a "%s" class' % (module, attr))
+moderator.register(Post, _load_moderator(BLOGDOR_MODERATOR))
