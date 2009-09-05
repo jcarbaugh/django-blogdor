@@ -6,7 +6,7 @@ AKISMET_KEY = getattr(settings, "AKISMET_KEY", None)
 
 class AkismetModerator(CommentModerator):
 
-    def moderate(moderator, comment, request):
+    def moderate(self, comment, content_object, request):
 
         from akismet import Akismet
 
