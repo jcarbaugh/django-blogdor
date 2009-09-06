@@ -40,7 +40,9 @@ class BlogdorModerator(CommentModerator):
             from_email = "bounce@%s" % Site.objects.get_current().domain
 
         subject = "New comment on %s" % content_object.title
-        del_link = Site.objects.get_current().domain + urlresolvers.reverse('admin:comments_comment_delete', args=(comment.id,))
+        del_link = 'http://%s%s' % (Site.objects.get_current().domain,
+            urlresolvers.reverse('admin:comments_comment_delete',
+                                 args=(comment.id,)))
         message = '\n\n'.join((comment.get_as_text(), del_link))
         recipient_email = content_object.author.email
 
