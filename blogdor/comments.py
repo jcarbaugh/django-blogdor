@@ -1,3 +1,4 @@
+from django.core import urlresolvers
 from django.conf import settings
 from django.contrib.comments.moderation import CommentModerator
 from django.contrib.sites.models import Site
@@ -39,7 +40,8 @@ class BlogdorModerator(CommentModerator):
             from_email = "bounce@%s" % Site.objects.get_current().domain
 
         subject = "New comment on %s" % content_object.title
-        message = comment.get_as_text()
+        message = '\n\n'.join(comment.get_as_text(),
+            urlresolvers.reverse('admin:comments_comment_delete', args=(comment.id,)))
         recipient_email = content_object.author.email
 
         send_mail(subject, message, from_email, (recipient_email,), fail_silently=True)
