@@ -107,4 +107,4 @@ class LatestForTag(BlogdorFeed):
             return bits[-1]
 
     def items(self, tag):
-        return TaggedItem.objects.get_by_model(Post, tag)[:ITEMS_PER_FEED]
+        return TaggedItem.objects.get_by_model(Post.objects.published(), tag)[:ITEMS_PER_FEED]
