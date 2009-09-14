@@ -35,15 +35,17 @@ class BlogdorModerator(CommentModerator):
 
         from django.core.mail import send_mail
 
-        from_email = getattr(settings, 'BLOGDOR_FROM_EMAIL', None)
-        if not from_email:
-            from_email = "bounce@%s" % Site.objects.get_current().domain
+        if comment.is_public:
+            from_email = getattr(settings, 'BLOGDOR_FROM_EMAIL', None)
+            if not from_email:
+                from_email = "bounce@%s" % Site.objects.get_current().domain
 
-        subject = "New comment on %s" % content_object.title
-        del_link = 'http://%s%s' % (Site.objects.get_current().domain,
-            urlresolvers.reverse('admin:comments_comment_delete',
-                                 args=(comment.id,)))
-        message = '\n\n'.join((comment.get_as_text(), del_link))
-        recipient_email = content_object.author.email
+            subject = "New comment on %s" % content_object.title
+            del_link = 'http://%s%s' % (Site.objects.get_current().domain,
+                urlresolvers.reverse('admin:comments_comment_delete',
+                                     args=(comment.id,)))
+            message = '\n\n'.join((comment.get_as_text(), del_link))
+            recipient_email = content_object.author.email
 
-        send_mail(subject, message, from_email, (recipient_email,), fail_silently=True)
+            send_mail(subject, message, from_email, (recipient_email,),
+                      fail_silently=True)
