@@ -63,11 +63,11 @@ class Post(models.Model):
     def __unicode__(self):
         return self.title
     
-    def save(self):
+    def save(self, **kwargs):
         self.excerpt.markup_type = self.content.markup_type
         if self.is_published and not self.date_published:
             self.date_published = datetime.datetime.now()
-        super(Post, self).save()
+        super(Post, self).save(**kwargs)
     
     @models.permalink
     def get_absolute_url(self):        
