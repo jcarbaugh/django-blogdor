@@ -14,7 +14,7 @@ class PostAdmin(admin.ModelAdmin):
     list_filter = ('is_published','comments_enabled','is_favorite')
     prepopulated_fields = {'slug': ('title',)}
     exclude = ('date_published','is_published',)
-    search_fields = ('author','title','content')
+    search_fields = ('author__username','author__first_name','title','content')
     actions = ('publish_posts','recall_posts','enable_comments','disable_comments')
     
     # return filtered author field
