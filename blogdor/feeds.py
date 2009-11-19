@@ -89,6 +89,9 @@ class LatestForAuthor(BlogdorFeed):
     def items(self, author):
         return Post.objects.published().filter(author=author)[:ITEMS_PER_FEED]
 
+    def item_pubdate(self, post):
+        return post.date_published
+
 class LatestForTag(BlogdorFeed):
     
     feed_title = u"Recent blog posts tagged with '%s'"
@@ -108,3 +111,6 @@ class LatestForTag(BlogdorFeed):
 
     def items(self, tag):
         return TaggedItem.objects.get_by_model(Post.objects.published(), tag)[:ITEMS_PER_FEED]
+
+    def item_pubdate(self, post):
+        return post.date_published
