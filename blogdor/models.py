@@ -5,6 +5,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from markupfield.fields import MarkupField
 from tagging.fields import TagField
+from tagging.models import TaggedItem
 import datetime
 from blogdor.comments import BlogdorModerator
 
@@ -89,6 +90,11 @@ class Post(models.Model):
     def recall(self):
         self.is_published = False
         self.save()
+    
+    def related_posts(self):
+        if self.tags:
+            qs = Post.objects.published().exclude(id=self.id).order_by('-date_published')
+            return TaggedItem.objects.get_by_model(qs, self.tags)
 
 
 def _load_moderator(path):
