@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
+from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.generic import date_based, list_detail
 from blogdor.models import Post
@@ -35,11 +35,18 @@ def post_wpcompat(request, year, month, day, slug):
         return HttpResponsePermanentRedirect(post.get_absolute_url())
 
 def _post(request, year, slug):
-    return list_detail.object_detail(
+    try:        
+        return list_detail.object_detail(
                     request,
                     queryset=Post.objects.published().select_related().filter(date_published__year=year),
                     slug=slug,
                     template_object_name='post')
+    except Http404, e:
+        try:
+            post = Post.objects.published().filter(date_published__year=year, slug__startswith=slug).latest('date_published')
+            return HttpResponseRedirect(post.get_absolute_url())
+        except Post.DoesNotExist:
+            raise e
 
 #
 # Post archive views
