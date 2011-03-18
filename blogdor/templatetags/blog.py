@@ -101,6 +101,19 @@ def get_tag_counts(parser, token):
 
     return TagListNode(tags, varname)
 
+@register.tag
+def get_popular_tags(parser, token):
+    pieces = token.contents.split()
+    if len(pieces) != 4:
+        raise template.TemplateSyntaxError('%r tag must be in format {%% %r num as varname %%}' % pieces[0])
+
+    num_tags = int(pieces[1])
+    post_ct = ContentType.objects.get_for_model(Post).id
+    tags = Tag.objects.filter(items__content_type=post_ct).annotate(count=Count('id')).order_by('-count').filter(count__gt=5)[:num_tags]
+    varname = pieces[-1]
+
+    return TagListNode(tags, varname)
+
 @register.simple_tag
 def gravatar(email):
     return render_to_string("blogdor/gravatar_img.html", {"url": utils.gravatar(email)})
