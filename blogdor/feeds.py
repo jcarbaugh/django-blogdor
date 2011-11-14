@@ -81,10 +81,7 @@ class LatestForAuthor(BlogdorFeed):
         return self.feed_description % self._display_name(author)
 
     def get_object(self, bits):
-        try:
-            return User.objects.get(username=bits[-1])
-        except User.DoesNotExist:
-            return bits[-1]
+        return User.objects.get(username=bits[-1])
 
     def items(self, author):
         return Post.objects.published().filter(author=author)[:ITEMS_PER_FEED]
