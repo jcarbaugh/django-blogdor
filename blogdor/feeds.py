@@ -1,13 +1,14 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.comments.models import Comment
-from django.contrib.syndication.feeds import Feed
+from django.contrib.syndication.views import Feed
 from django.core.urlresolvers import reverse
 from blogdor.models import Post
 from tagging.models import Tag, TaggedItem
 
 ITEMS_PER_FEED = getattr(settings, 'BLOGDOR_ITEMS_PER_FEED', 10)
 FEED_TTL = getattr(settings, 'BLOGDOR_FEED_TTL', 120)
+
 
 #
 # Generic blogdor feed
@@ -16,12 +17,13 @@ FEED_TTL = getattr(settings, 'BLOGDOR_FEED_TTL', 120)
 class BlogdorFeed(Feed):
 
     description_template = 'blogdor/feeds/post_description.html'
-   
+
     def link(self):
         return reverse('blogdor_archive')
 
     def ttl(self):
         return str(FEED_TTL)
+
 
 #
 # Specific blogdor feeds
@@ -31,17 +33,18 @@ class LatestPosts(BlogdorFeed):
 
     title = u"Latest blog posts"
     description = title
-    
+
     def items(self):
         return Post.objects.published()[:ITEMS_PER_FEED]
-        
+
     def item_author_name(self, post):
         if post.author:
             return post.author.get_full_name()
         return "Anonymous"
-    
+
     def item_pubdate(self, post):
         return post.date_published
+
 
 class LatestComments(BlogdorFeed):
 
@@ -61,11 +64,12 @@ class LatestComments(BlogdorFeed):
     def item_pubdate(self, comment):
         return comment.submit_date
 
+
 class LatestForAuthor(BlogdorFeed):
 
     feed_title = u"Recent blog posts authored by %s"
     feed_description = feed_title
-    
+
     def _display_name(self, user):
         if hasattr(user, 'get_full_name'):
             display_name = user.get_full_name()
@@ -89,17 +93,18 @@ class LatestForAuthor(BlogdorFeed):
     def item_pubdate(self, post):
         return post.date_published
 
+
 class LatestForTag(BlogdorFeed):
-    
+
     feed_title = u"Recent blog posts tagged with '%s'"
     feed_description = feed_title
-    
+
     def title(self, tag):
         return self.feed_title % tag
-    
+
     def description(self, tag):
         return self.feed_description % tag
-    
+
     def get_object(self, bits):
         try:
             return Tag.objects.get(name=bits[-1])
