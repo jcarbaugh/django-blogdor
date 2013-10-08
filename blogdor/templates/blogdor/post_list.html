@@ -1,6 +1,6 @@
 <ol>
 	{% for post in post_list %}
-		<li><a href="{% url blogdor_post post.date_published.year post.slug %}">{{ post }}</a></li>
+		<li><a href="{% url 'blogdor_post' post.date_published.year post.slug %}">{{ post }}</a></li>
 	{% endfor %}
 </ol>
 {% include 'blogdor/paginator.html' %}
