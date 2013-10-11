@@ -3,7 +3,7 @@
 {% if date_list %}
 	<ol>
 		{% for date in date_list %}
-			<li><a href="{% url blogdor_archive_month year date|date:"m" %}">{{ date|date:"F" }}</a></li>
+			<li><a href="{% url 'blogdor_archive_month' date|date:"Y" date|date:"m" %}">{{ date|date:"F" }}</a></li>
 		{% endfor %}
 	</ol>
 {% endif %}

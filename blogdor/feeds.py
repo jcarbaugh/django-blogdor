@@ -84,8 +84,8 @@ class LatestForAuthor(BlogdorFeed):
     def description(self, author):
         return self.feed_description % self._display_name(author)
 
-    def get_object(self, bits):
-        return User.objects.get(username=bits[-1])
+    def get_object(self, bits, author):
+        return User.objects.get(username=author)
 
     def items(self, author):
         return Post.objects.published().filter(author=author)[:ITEMS_PER_FEED]
@@ -105,11 +105,11 @@ class LatestForTag(BlogdorFeed):
     def description(self, tag):
         return self.feed_description % tag
 
-    def get_object(self, bits):
+    def get_object(self, bits, tag):
         try:
-            return Tag.objects.get(name=bits[-1])
+            return Tag.objects.get(name=tag)
         except Tag.DoesNotExist:
-            return bits[-1]
+            return tag
 
     def items(self, tag):
         return TaggedItem.objects.get_by_model(Post.objects.published(), tag)[:ITEMS_PER_FEED]

@@ -13,7 +13,7 @@
         <span>Tags:</span>
         <ul>
             {% for tag in tags %}
-            	<li><a href="{% url blogdor_tag tag %}">{{ tag }}</a></li>
+            	<li><a href="{% url 'blogdor_tag' tag %}">{{ tag }}</a></li>
             {% endfor %}
         </ul>
     </div>  
